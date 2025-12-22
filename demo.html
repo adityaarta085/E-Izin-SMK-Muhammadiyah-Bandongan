@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DEMO E-Zin SMK Muhammadiyah Bandongan</title>
+    
+    <link rel="icon" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiN3lb6zD8UmdVfbhENgNWXK1OjWDvwrZVUaEyMyjcOIxgzqIu5wzGUZusOD9WYXVVupp87PQ4lZcZl6ZyzPtFe8h4-TnjMLz31oDylO9UScGA0bi_miR8MKYufzevuezpGhNrpaOrgixQiPBkS9iZb8JalBVD5ueOhN4TB9x3T9N2yG4rwjEdDUGkoK0k/s554/images%20(2).png">
+    <meta name="theme-color" content="#4f46e5">
+    
+    <!-- LIBRARIES -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    
+    <!-- Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        primary: { 50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 900: '#312e81' }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-out forwards',
+                        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { transform: 'translateY(100%)' }, '100%': { transform: 'translateY(0)' } }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); }
+        .bottom-sheet { border-radius: 2rem 2rem 0 0; box-shadow: 0 -4px 20px rgba(0,0,0,0.1); }
+        #reader video { width: 100% !important; height: 100% !important; object-fit: cover; }
+        .custom-checkbox { width: 1.25rem; height: 1.25rem; border-radius: 0.375rem; border: 2px solid #cbd5e1; appearance: none; cursor: pointer; transition: all 0.2s; position: relative; }
+        .custom-checkbox:checked { background-color: #4f46e5; border-color: #4f46e5; }
+        .custom-checkbox:checked::after { content: '✔'; color: white; position: absolute; font-size: 0.75rem; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        
+        /* Floating Widget Animation */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .floating-widget { animation: float 3s ease-in-out infinite; }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 bg-slate-50 selection:bg-primary-100 selection:text-primary-700">
+
+    <!-- FLOATING GITHUB & SOCIAL WIDGET -->
+    <div class="fixed bottom-6 right-6 z-[100] flex flex-col gap-3 items-end floating-widget">
+        <a href="https://createhub.web.id/mediasosial" target="_blank" class="flex items-center gap-2 px-4 py-2 bg-pink-600 text-white rounded-full shadow-lg hover:bg-pink-700 transition-all text-xs font-bold hover:scale-105">
+            <i data-lucide="heart" class="w-4 h-4"></i>
+            <span>Creator Social</span>
+        </a>
+        <a href="https://github.com/adityaarta085/E-Izin-SMK-Muhammadiyah-Bandongan" target="_blank" class="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-full shadow-lg hover:bg-slate-800 transition-all text-xs font-bold hover:scale-105">
+            <i data-lucide="github" class="w-4 h-4"></i>
+            <span>Source Code</span>
+        </a>
+    </div>
+
+    <!-- GLOBAL LOADING -->
+    <div id="app-loading" class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center transition-opacity duration-300">
+        <div class="relative w-24 h-24">
+            <div class="absolute inset-0 border-4 border-slate-100 rounded-full"></div>
+            <div class="absolute inset-0 border-4 border-primary-600 rounded-full border-t-transparent animate-spin"></div>
+        </div>
+        <p class="mt-4 font-bold text-slate-400 text-sm tracking-widest uppercase">Memuat Demo...</p>
+    </div>
+
+    <!-- LOGIN VIEW -->
+    <div id="view-login" class="min-h-screen hidden flex flex-col relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1/2 bg-primary-600 rounded-b-[3rem] z-0"></div>
+        <div class="relative z-10 flex-1 flex flex-col justify-center px-6 sm:px-12 py-10">
+            <div class="text-center mb-8">
+                <div class="w-24 h-24 bg-white rounded-2xl mx-auto flex items-center justify-center mb-6 shadow-xl shadow-primary-900/20 p-4">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiN3lb6zD8UmdVfbhENgNWXK1OjWDvwrZVUaEyMyjcOIxgzqIu5wzGUZusOD9WYXVVupp87PQ4lZcZl6ZyzPtFe8h4-TnjMLz31oDylO9UScGA0bi_miR8MKYufzevuezpGhNrpaOrgixQiPBkS9iZb8JalBVD5ueOhN4TB9x3T9N2yG4rwjEdDUGkoK0k/s554/images%20(2).png" class="w-full h-full object-contain" alt="Logo">
+                </div>
+                <h1 class="text-3xl font-bold text-white mb-1">E-Zin DEMO</h1>
+                <p class="text-primary-100">SMK Muhammadiyah Bandongan</p>
+                <span class="inline-block px-3 py-1 bg-white/20 text-white text-[10px] font-bold rounded-full mt-2 backdrop-blur-sm border border-white/30">PREVIEW MODE (NO DATABASE)</span>
+            </div>
+
+            <div class="bg-white/95 backdrop-blur-xl p-8 rounded-[2rem] shadow-2xl animate-slide-up">
+                <form id="login-form" class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">ID Pengguna</label>
+                        <input type="text" id="inp-user" class="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold text-slate-800 focus:ring-2 focus:ring-primary-500" placeholder="Pilih akun di bawah..." required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Kata Sandi</label>
+                        <input type="password" id="inp-pass" class="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold text-slate-800 focus:ring-2 focus:ring-primary-500" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="w-full py-4 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl shadow-lg active:scale-95 transition-all">Masuk Demo</button>
+                </form>
+
+                <!-- DEMO CREDENTIALS TABLE -->
+                <div class="mt-6 border border-slate-100 rounded-xl overflow-hidden bg-slate-50">
+                    <div class="bg-primary-50 px-4 py-2 border-b border-primary-100">
+                        <p class="text-[10px] font-bold text-primary-700 uppercase tracking-wider text-center">Klik Akun Untuk Mencoba</p>
+                    </div>
+                    <div class="divide-y divide-slate-200">
+                        <button onclick="fillLogin('ADITYA','123')" class="w-full flex items-center justify-between p-3 hover:bg-white transition text-left group">
+                            <div>
+                                <p class="text-xs font-bold text-slate-800">Siswa (Aditya)</p>
+                                <p class="text-[10px] text-slate-400">User: ADITYA | Pass: 123</p>
+                            </div>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 group-hover:text-primary-600"></i>
+                        </button>
+                        <button onclick="fillLogin('GURU','123')" class="w-full flex items-center justify-between p-3 hover:bg-white transition text-left group">
+                            <div>
+                                <p class="text-xs font-bold text-slate-800">Guru Piket</p>
+                                <p class="text-[10px] text-slate-400">User: GURU | Pass: 123</p>
+                            </div>
+                             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 group-hover:text-primary-600"></i>
+                        </button>
+                         <button onclick="fillLogin('SATPAM','123')" class="w-full flex items-center justify-between p-3 hover:bg-white transition text-left group">
+                            <div>
+                                <p class="text-xs font-bold text-slate-800">Satpam / WS</p>
+                                <p class="text-[10px] text-slate-400">User: SATPAM | Pass: 123</p>
+                            </div>
+                             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 group-hover:text-primary-600"></i>
+                        </button>
+                        <button onclick="fillLogin('ADMIN','123')" class="w-full flex items-center justify-between p-3 hover:bg-white transition text-left group">
+                            <div>
+                                <p class="text-xs font-bold text-slate-800">Administrator</p>
+                                <p class="text-[10px] text-slate-400">User: ADMIN | Pass: 123</p>
+                            </div>
+                             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 group-hover:text-primary-600"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="text-center mt-8 text-xs font-bold text-slate-400">Dibuat oleh Aditya Arta Putra</p>
+        </div>
+    </div>
+
+    <!-- APP LAYOUT -->
+    <div id="view-app" class="hidden min-h-screen pb-24 relative bg-slate-50">
+        <header id="app-header" class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-slate-200 px-6 py-4 z-40">
+            <div class="flex justify-between items-center max-w-5xl mx-auto">
+                <div class="flex items-center gap-3">
+                    <div id="header-avatar" class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-purple-600 text-white flex items-center justify-center font-bold text-sm shadow-md">EZ</div>
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider" id="header-subtitle">Selamat Datang</p>
+                        <h2 class="font-bold text-slate-800 leading-none truncate max-w-[150px] sm:max-w-xs" id="header-title">User</h2>
+                    </div>
+                </div>
+                <button onclick="App.logout()" class="p-2.5 bg-slate-50 text-slate-500 rounded-full hover:bg-red-50 hover:text-red-600 transition-colors"><i data-lucide="log-out" class="w-5 h-5"></i></button>
+            </div>
+        </header>
+
+        <main id="app-content" class="pt-24 px-6 max-w-5xl mx-auto min-h-[80vh] animate-fade-in"></main>
+
+        <nav id="app-nav" class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 pb-safe z-50 px-6 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] hidden">
+            <div class="flex justify-around items-center max-w-md mx-auto" id="nav-items"></div>
+        </nav>
+    </div>
+
+    <!-- MODALS (SAME AS INDEX HTML BUT SIMPLIFIED) -->
+    <div id="modal-form" class="hidden fixed inset-0 z-[60] flex items-end sm:items-center justify-center">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="Siswa.closeForm()"></div>
+        <div class="bg-white w-full max-w-lg rounded-t-[2rem] sm:rounded-[2rem] relative z-10 p-6 bottom-sheet animate-slide-up">
+            <h3 class="font-bold text-xl text-slate-900 mb-4">Formulir Izin</h3>
+            <form id="form-submission" class="space-y-4">
+                <input type="hidden" id="f-type">
+                <div id="f-alert" class="hidden p-3 rounded-lg text-xs font-bold mb-2"></div>
+                <select id="f-reason" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-bold outline-none"></select>
+                <textarea id="f-desc" rows="3" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-medium outline-none" placeholder="Keterangan lengkap..."></textarea>
+                <div id="f-time-div" class="hidden">
+                    <input type="time" id="f-time" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-bold">
+                </div>
+                <button type="submit" class="w-full py-4 bg-primary-600 text-white font-bold rounded-xl shadow-lg active:scale-95 transition-all">Kirim Permohonan</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-qr" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-6">
+        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" onclick="Siswa.closeQr()"></div>
+        <div class="bg-white p-8 rounded-[2rem] relative z-10 text-center max-w-sm w-full shadow-2xl animate-fade-in">
+            <h3 class="font-bold text-2xl text-slate-900 mb-1">Kode Akses</h3>
+            <p class="text-sm text-slate-500 mb-6">Tunjukkan ke petugas.</p>
+            <div id="qr-code" class="flex justify-center mb-6"></div>
+            <p class="font-mono font-bold text-xl text-primary-700 tracking-wider bg-slate-50 p-2 rounded-lg" id="qr-id">...</p>
+            <button onclick="Siswa.closeQr()" class="w-full mt-6 py-3 bg-slate-900 text-white font-bold rounded-xl">Tutup</button>
+        </div>
+    </div>
+
+    <script>
+        // --- MOCK DATA (PENGGANTI SUPABASE) ---
+        const MockDB = {
+            users: [
+                { id: 1, role: 'siswa', username: 'ADITYA', password: '123', full_name: 'Aditya Arta Putra', class_name: 'X TJKT A', nipd: '12345', nisn: '001', mother_name: 'IBU' },
+                { id: 2, role: 'guru', username: 'GURU', password: '123', full_name: 'Pak Guru', class_name: '-' },
+                { id: 3, role: 'admin', username: 'ADMIN', password: '123', full_name: 'Administrator', class_name: '-' },
+                { id: 4, role: 'satpam', username: 'SATPAM', password: '123', full_name: 'Satpam Sekolah', class_name: '-' }
+            ],
+            // Data dummy awal biar ga kosong
+            permissions: [
+                { id: 101, student_name: 'Aditya Arta Putra', class_name: 'X TJKT A', type: 'masuk', reason: 'Terlambat', description: 'Ban bocor di jalan', status: 'completed', created_at: new Date(Date.now() - 86400000).toISOString() },
+                { id: 102, student_name: 'Aditya Arta Putra', class_name: 'X TJKT A', type: 'keluar', reason: 'Dispensasi', description: 'Lomba LKS', return_time: '14:00', status: 'approved', created_at: new Date().toISOString() },
+                { id: 103, student_name: 'Siti Aminah', class_name: 'XI TKJ B', type: 'masuk', reason: 'Sakit', description: 'Surat dokter terlampir', status: 'pending', created_at: new Date().toISOString() }
+            ]
+        };
+
+        // --- UTILS ---
+        const Utils = {
+            hide: (id) => document.getElementById(id)?.classList.add('hidden'),
+            show: (id) => document.getElementById(id)?.classList.remove('hidden'),
+            loading: (show) => {
+                const el = document.getElementById('app-loading');
+                if(show) { el.classList.remove('hidden'); setTimeout(()=>el.classList.remove('opacity-0'),10); }
+                else { el.classList.add('opacity-0'); setTimeout(()=>el.classList.add('hidden'),300); }
+            },
+            icons: () => { if(window.lucide) window.lucide.createIcons(); },
+            greeting: () => {
+                const h = new Date().getHours();
+                return h < 11 ? 'Selamat Pagi' : (h < 15 ? 'Selamat Siang' : (h < 19 ? 'Selamat Sore' : 'Selamat Malam'));
+            },
+            formatDate: (str) => {
+                const d = new Date(str);
+                return d.toLocaleDateString('id-ID', {day:'numeric', month:'short'}) + ' • ' + d.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+            },
+            statusColor: (s) => {
+                if(s==='pending') return 'bg-amber-100 text-amber-700 border-amber-200';
+                if(s==='approved') return 'bg-blue-100 text-blue-700 border-blue-200';
+                if(s==='rejected') return 'bg-red-100 text-red-700 border-red-200';
+                if(s==='completed' || s==='returned' || s==='out') return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+                return 'bg-slate-100 text-slate-700';
+            }
+        };
+
+        // --- CORE APP ---
+        let globalState = { permissions: [], activeTab: '', selectedIds: new Set() };
+        let currentUser = null;
+
+        const App = {
+            init: async () => {
+                Utils.loading(true);
+                // Simulasi loading assets
+                await new Promise(r => setTimeout(r, 800));
+                
+                // Cek sesi (di demo kita pakai memory variable / sessionStorage sederhana)
+                const storedUser = sessionStorage.getItem('demo_user');
+                
+                Utils.loading(false);
+                if(storedUser) {
+                    currentUser = JSON.parse(storedUser);
+                    App.loadApp();
+                } else {
+                    Utils.show('view-login');
+                }
+                Utils.icons();
+            },
+            login: async (u, p) => {
+                Utils.loading(true);
+                await new Promise(r => setTimeout(r, 600)); // Simulasi network
+
+                const user = MockDB.users.find(x => x.username === u && x.password === p);
+                
+                if(user) {
+                    currentUser = user;
+                    sessionStorage.setItem('demo_user', JSON.stringify(user));
+                    Utils.hide('view-login');
+                    App.loadApp();
+                } else {
+                    Utils.loading(false);
+                    Swal.fire('Gagal', 'Username/Password salah (Coba klik akun demo di bawah)', 'error');
+                }
+            },
+            loadApp: async () => {
+                Utils.show('view-app');
+                App.setupNav(currentUser.role);
+                
+                // Load data permissions
+                globalState.permissions = [...MockDB.permissions].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+
+                if(currentUser.role === 'siswa') await Siswa.init();
+                else await Staff.init(currentUser.role);
+            },
+            logout: () => {
+                Swal.fire({
+                    title: 'Keluar Demo?', icon: 'question', showCancelButton: true, confirmButtonText: 'Ya'
+                }).then(r => {
+                    if(r.isConfirmed) {
+                        sessionStorage.removeItem('demo_user');
+                        window.location.reload();
+                    }
+                });
+            },
+            setupNav: (role) => {
+                const nav = document.getElementById('nav-items');
+                nav.innerHTML = '';
+                Utils.show('app-nav');
+                const add = (id, icon, label) => {
+                    const fn = role==='siswa' ? `Siswa.tab('${id}')` : `Staff.page('${id}')`;
+                    nav.innerHTML += `<button onclick="${fn}" id="nav-${id}" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-primary-600 w-16"><i data-lucide="${icon}" class="w-6 h-6"></i><span class="text-[10px] font-bold">${label}</span></button>`;
+                };
+
+                if(role === 'siswa') {
+                    add('home', 'home', 'Beranda');
+                    add('history', 'clock', 'Riwayat');
+                    add('profile', 'user', 'Profil');
+                } else if(role === 'admin') {
+                    add('dash', 'layout-dashboard', 'Dash');
+                    add('data', 'users', 'Siswa');
+                } else if(role === 'guru') {
+                    add('val', 'check-square', 'Validasi');
+                    add('scan', 'scan-line', 'Scan');
+                } else {
+                    add('ws-dash', 'layout-dashboard', 'Dash');
+                    add('scan-in', 'log-in', 'Masuk');
+                    add('scan-out', 'log-out', 'Keluar');
+                }
+            }
+        };
+
+        // --- SISWA LOGIC ---
+        const Siswa = {
+            init: async () => {
+                document.getElementById('header-title').innerText = currentUser.full_name;
+                document.getElementById('header-subtitle').innerText = "Mode Siswa";
+                document.getElementById('header-avatar').innerText = currentUser.full_name.substring(0,2);
+                Siswa.tab('home');
+            },
+            tab: (t) => {
+                globalState.activeTab = t;
+                document.querySelectorAll('#nav-items button').forEach(b=>b.classList.remove('text-primary-600'));
+                document.getElementById(`nav-${t}`)?.classList.add('text-primary-600');
+                
+                const container = document.getElementById('app-content');
+                const list = globalState.permissions.filter(p => p.student_name === currentUser.full_name);
+
+                if(t === 'home') {
+                    container.innerHTML = `
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group">
+                            <div class="absolute right-[-10px] top-[-10px] w-16 h-16 bg-blue-50 rounded-full"></div>
+                            <p class="text-xs font-bold text-slate-400 uppercase mb-1 relative z-10">Izin Masuk</p>
+                            <h3 class="text-3xl font-bold text-blue-600 relative z-10">${list.filter(d=>d.type==='masuk').length}</h3>
+                        </div>
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group">
+                            <div class="absolute right-[-10px] top-[-10px] w-16 h-16 bg-orange-50 rounded-full"></div>
+                            <p class="text-xs font-bold text-slate-400 uppercase mb-1 relative z-10">Izin Keluar</p>
+                            <h3 class="text-3xl font-bold text-orange-600 relative z-10">${list.filter(d=>d.type==='keluar').length}</h3>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-4">Buat Izin Baru</h3>
+                    <div class="grid grid-cols-1 gap-4 mb-8">
+                        <button onclick="Siswa.form('masuk')" class="bg-gradient-to-r from-blue-600 to-blue-500 p-6 rounded-[2rem] shadow-lg text-left text-white mb-2">
+                            <h4 class="text-xl font-bold">Izin Masuk</h4><p class="text-blue-100 text-sm">Terlambat / Dokter</p>
+                        </button>
+                        <button onclick="Siswa.form('keluar')" class="bg-white border border-slate-200 p-6 rounded-[2rem] shadow-sm text-left hover:border-orange-200">
+                            <h4 class="text-xl font-bold text-slate-800">Izin Keluar</h4><p class="text-slate-400 text-sm">Dispensasi / Sakit</p>
+                        </button>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-4">Riwayat Terkini</h3>
+                    <div class="space-y-3 pb-6">${list.length ? list.slice(0,3).map(p => Siswa.card(p)).join('') : '<p class="text-center text-slate-400 py-4">Belum ada data</p>'}</div>
+                    `;
+                } else if(t === 'history') {
+                    container.innerHTML = `<h3 class="font-bold text-2xl mb-6">Riwayat</h3><div class="space-y-4 pb-20">${list.map(p => Siswa.card(p)).join('')}</div>`;
+                } else if(t === 'profile') {
+                    container.innerHTML = `
+                    <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 text-center mb-6">
+                        <div class="w-20 h-20 bg-gradient-to-br from-primary-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">${currentUser.full_name.substring(0,2)}</div>
+                        <h3 class="font-bold text-xl">${currentUser.full_name}</h3>
+                        <p class="text-sm text-slate-500">${currentUser.class_name}</p>
+                    </div>
+                    <button onclick="window.location.reload()" class="w-full py-4 bg-red-50 text-red-600 font-bold rounded-xl border border-red-100 flex justify-center gap-2"><i data-lucide="log-out"></i> Reset Demo</button>
+                    `;
+                }
+                Utils.icons();
+            },
+            card: (p) => {
+                const isM = p.type === 'masuk';
+                const showQR = (p.status === 'approved' || p.status === 'out');
+                return `
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm animate-fade-in">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex gap-3">
+                            <div class="w-10 h-10 rounded-full flex-center ${isM?'bg-blue-50 text-blue-600':'bg-orange-50 text-orange-600'} flex items-center justify-center"><i data-lucide="${isM?'log-in':'log-out'}" class="w-5 h-5"></i></div>
+                            <div><h4 class="font-bold text-sm">${p.reason}</h4><p class="text-xs text-slate-500">${p.description}</p></div>
+                        </div>
+                        <span class="text-[10px] font-bold px-2 py-1 rounded border uppercase ${Utils.statusColor(p.status)}">${p.status}</span>
+                    </div>
+                    <div class="flex justify-between items-center mt-2 pt-2 border-t border-slate-50">
+                        <p class="text-[10px] font-bold text-slate-400">${Utils.formatDate(p.created_at)}</p>
+                        ${showQR ? `<button onclick="Siswa.qr('${p.id}')" class="px-3 py-1 bg-slate-900 text-white rounded-lg text-xs font-bold flex items-center gap-1"><i data-lucide="qr-code" class="w-3 h-3"></i> QR</button>` : ''}
+                    </div>
+                </div>`;
+            },
+            form: (t) => {
+                Utils.show('modal-form');
+                document.getElementById('f-type').value = t;
+                const sel = document.getElementById('f-reason'); 
+                sel.innerHTML = '<option value="" disabled selected>Pilih Alasan...</option>';
+                (t==='masuk'?['Terlambat','Sakit','Lainnya']:['Sakit','Dispensasi','Tugas','Lainnya']).forEach(o=>sel.innerHTML+=`<option value="${o}">${o}</option>`);
+                
+                const alrt = document.getElementById('f-alert');
+                Utils.show('f-alert');
+                if(t==='masuk') {
+                    Utils.hide('f-time-div');
+                    alrt.className = 'p-3 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100 mb-2';
+                    alrt.innerText = 'Izin masuk otomatis disetujui.';
+                } else {
+                    Utils.show('f-time-div');
+                    alrt.className = 'p-3 rounded-lg text-xs font-bold bg-orange-50 text-orange-700 border border-orange-100 mb-2';
+                    alrt.innerText = 'Izin keluar perlu validasi Guru.';
+                }
+            },
+            submit: (e) => {
+                e.preventDefault();
+                Utils.loading(true);
+                const type = document.getElementById('f-type').value;
+                
+                setTimeout(() => {
+                    const newId = Math.floor(Math.random() * 9000) + 1000;
+                    const newPerm = {
+                        id: newId,
+                        student_name: currentUser.full_name,
+                        class_name: currentUser.class_name,
+                        type: type,
+                        reason: document.getElementById('f-reason').value,
+                        description: document.getElementById('f-desc').value,
+                        return_time: document.getElementById('f-time').value,
+                        status: type === 'masuk' ? 'approved' : 'pending',
+                        created_at: new Date().toISOString()
+                    };
+                    
+                    MockDB.permissions.unshift(newPerm);
+                    globalState.permissions = MockDB.permissions;
+                    Utils.loading(false);
+                    Siswa.closeForm();
+                    Siswa.tab(globalState.activeTab); // Refresh
+                    Swal.fire('Berhasil', 'Data demo berhasil ditambahkan', 'success');
+                }, 800);
+            },
+            closeForm: () => { Utils.hide('modal-form'); document.getElementById('form-submission').reset(); },
+            qr: (id) => {
+                Utils.show('modal-qr');
+                document.getElementById('qr-id').innerText = '#' + id;
+                document.getElementById('qr-code').innerHTML = '';
+                new QRCode(document.getElementById("qr-code"), {text:id.toString(), width:180, height:180});
+            },
+            closeQr: () => Utils.hide('modal-qr')
+        };
+
+        // --- STAFF LOGIC (SIMPLIFIED FOR DEMO) ---
+        const Staff = {
+            init: async (role) => {
+                document.getElementById('header-title').innerText = "Portal " + role.toUpperCase();
+                document.getElementById('header-subtitle').innerText = "Demo Staff";
+                document.getElementById('header-avatar').innerHTML = '<i data-lucide="shield" class="w-5 h-5"></i>';
+                
+                if(role === 'admin') Staff.page('dash');
+                else if(role === 'guru') Staff.page('val');
+                else Staff.page('ws-dash');
+            },
+            page: (pg) => {
+                globalState.activeTab = pg;
+                document.querySelectorAll('#nav-items button').forEach(b=>b.classList.remove('text-primary-600'));
+                document.getElementById(`nav-${pg}`)?.classList.add('text-primary-600');
+                
+                const container = document.getElementById('app-content');
+                const list = globalState.permissions;
+
+                if(pg === 'dash' || pg === 'ws-dash') {
+                    container.innerHTML = `
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm"><p class="text-xs font-bold text-slate-400">TOTAL IZIN</p><h3 class="text-2xl font-bold text-slate-800">${list.length}</h3></div>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm"><p class="text-xs font-bold text-slate-400">PENDING</p><h3 class="text-2xl font-bold text-slate-800">${list.filter(d=>d.status==='pending').length}</h3></div>
+                    </div>
+                    <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+                        <div class="p-4 bg-slate-50 border-b border-slate-100 font-bold">Semua Data Izin</div>
+                        <div class="divide-y divide-slate-100">
+                             ${list.map(d => `<div class="p-4 flex justify-between items-center"><div><p class="font-bold text-sm">${d.student_name}</p><p class="text-xs text-slate-500">${d.reason} (${d.type})</p></div><span class="text-[10px] font-bold px-2 py-1 rounded border uppercase ${Utils.statusColor(d.status)}">${d.status}</span></div>`).join('')}
+                        </div>
+                    </div>`;
+                } else if(pg === 'val') {
+                    const pnd = list.filter(d => d.status === 'pending');
+                    container.innerHTML = `
+                    <h3 class="font-bold text-2xl mb-4">Validasi Izin</h3>
+                    <div class="space-y-4 pb-24">
+                        ${pnd.length ? pnd.map(d => `
+                        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                            <h4 class="font-bold text-lg">${d.student_name}</h4>
+                            <p class="text-sm text-slate-600 mb-4">"${d.reason} - ${d.description}"</p>
+                            <div class="grid grid-cols-2 gap-3">
+                                <button onclick="Staff.act(${d.id},'rejected')" class="py-2 bg-red-50 text-red-600 font-bold rounded-xl">Tolak</button>
+                                <button onclick="Staff.act(${d.id},'approved')" class="py-2 bg-primary-600 text-white font-bold rounded-xl shadow">Setujui</button>
+                            </div>
+                        </div>`).join('') : '<div class="text-center py-10 opacity-50"><p>Tidak ada antrian</p></div>'}
+                    </div>`;
+                } else if(pg === 'data') {
+                    container.innerHTML = `<div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-100"><h3 class="font-bold mb-4">Data Siswa (Demo View)</h3><div class="space-y-2">${MockDB.users.filter(u=>u.role==='siswa').map(s=>`<div class="p-3 bg-slate-50 rounded-lg flex justify-between"><span>${s.full_name}</span><span class="font-mono text-xs bg-slate-200 px-2 py-1 rounded">${s.class_name}</span></div>`).join('')}</div></div>`;
+                } else if(pg.includes('scan')) {
+                    container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center min-h-[60vh]">
+                         <div class="relative w-64 h-64 bg-black rounded-3xl overflow-hidden mb-6"><div id="reader" class="w-full h-full"></div></div>
+                         <p class="text-center text-sm text-slate-500 mb-4">Scan QR Siswa atau Input ID</p>
+                         <div class="flex gap-2"><input id="manual-scan" type="number" class="p-3 bg-white border border-slate-200 rounded-xl font-bold text-center w-32" placeholder="ID (ex:101)"><button onclick="Staff.procScan(document.getElementById('manual-scan').value, '${pg}')" class="p-3 bg-slate-900 text-white rounded-xl"><i data-lucide="arrow-right"></i></button></div>
+                    </div>`;
+                    setTimeout(() => Staff.startScanner(pg), 500);
+                }
+                Utils.icons();
+            },
+            act: (id, st) => {
+                Utils.loading(true);
+                setTimeout(() => {
+                    const idx = MockDB.permissions.findIndex(p => p.id === id);
+                    if(idx > -1) MockDB.permissions[idx].status = st;
+                    globalState.permissions = MockDB.permissions;
+                    Utils.loading(false);
+                    Staff.page('val');
+                    Swal.fire('Berhasil', `Status diubah jadi ${st}`, 'success');
+                }, 500);
+            },
+            startScanner: (pg) => {
+                const scanner = new Html5Qrcode("reader");
+                Html5Qrcode.getCameras().then(devices => {
+                    if (devices && devices.length) {
+                        scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => Staff.procScan(txt, pg));
+                    }
+                }).catch(err => console.log(err));
+            },
+            procScan: (txt, mode) => {
+                const id = parseInt(txt);
+                const perm = MockDB.permissions.find(p => p.id === id);
+                if(!perm) return Swal.fire('Error', 'Data ID tidak ditemukan di Demo DB', 'error');
+
+                let newStat = '';
+                if(mode.includes('in') && perm.type === 'masuk') newStat = 'completed';
+                else if(mode.includes('out') && perm.type === 'keluar') newStat = 'out';
+                else return Swal.fire('Gagal', 'Tipe izin tidak sesuai dengan mode scan', 'warning');
+
+                if(perm.status === 'pending') return Swal.fire('Info', 'Izin belum disetujui Guru', 'info');
+
+                perm.status = newStat;
+                Swal.fire('Sukses', `Scan Berhasil! Status: ${newStat}`, 'success');
+            }
+        };
+
+        // --- DEMO HELPER ---
+        function fillLogin(u, p) {
+            document.getElementById('inp-user').value = u;
+            document.getElementById('inp-pass').value = p;
+        }
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', App.init);
+        document.getElementById('login-form').addEventListener('submit', e => { e.preventDefault(); App.login(document.getElementById('inp-user').value, document.getElementById('inp-pass').value); });
+        document.getElementById('form-submission').addEventListener('submit', Siswa.submit);
+    </script>
+</body>
+</html>
