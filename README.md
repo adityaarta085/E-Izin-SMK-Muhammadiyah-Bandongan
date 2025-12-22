@@ -95,6 +95,28 @@ Aditya membuktikan bahwa usia muda bukan halangan untuk menciptakan sistem yang 
 
 ---
 
+## 🌐 Connect With Me
+
+Mari terhubung dan berkolaborasi! Anda bisa menemukan saya di berbagai platform media sosial berikut:
+
+<div align="center">
+
+| **Instagram** | **WhatsApp** | **Website** |
+| :---: | :---: | :---: |
+| [![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?style=for-the-badge&logo=Instagram&logoColor=white)](https://www.instagram.com/norespon.adityaputra) | [![WhatsApp](https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://wa.me/6285136436577) | [![Website](https://img.shields.io/badge/My%20Website-000000?style=for-the-badge&logo=google-chrome&logoColor=white)](https://createhub.web.id/mediasosial/) |
+
+</div>
+
+### 📸 Social Preview
+<div align="center">
+  <a href="https://createhub.web.id/mediasosial/">
+    <img src="https://api.microlink.io/?url=https%3A%2F%2Fcreatehub.web.id%2Fmediasosial%2F&screenshot=true&embed=screenshot.url" width="600px" style="border-radius: 10px; border: 2px solid #3ECF8E;" alt="Social Media Preview">
+  </a>
+  <p><i>Klik gambar di atas untuk mengunjungi Linktree Personal saya</i></p>
+</div>
+
+---
+
 ## 🛠️ Installation / Usage
 
 Karena project ini berbasis Client-Side (Frontend only) dengan Supabase, Anda dapat menjalankannya dengan mudah:
@@ -105,8 +127,8 @@ Karena project ini berbasis Client-Side (Frontend only) dengan Supabase, Anda da
     ```
 2.  **Buka Project**
     Cukup buka file `index.html` menggunakan Live Server (VS Code) atau browser modern apa saja.
-3.  **Setup Database (Opsional)**
-    Jika ingin menggunakan database sendiri, ganti `SUPABASE_URL` dan `SUPABASE_KEY` di dalam script `index.html`.
+3.  **Setup Database Supabase**
+    Dengan Mapping yang sudah ada di script Index.html, ganti `SUPABASE_URL` dan `SUPABASE_KEY` di dalam script `index.html`
 
 ---
 
