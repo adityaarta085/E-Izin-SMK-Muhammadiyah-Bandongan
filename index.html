@@ -42,7 +42,16 @@
                     keyframes: {
                         fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
                         slideUp: { '0%': { transform: 'translateY(100%)' }, '100%': { transform: 'translateY(0)' } },
-                        bounceSlight: { '0%, 100%': { transform: 'translateY(-5%)' }, '50%': { transform: 'translateY(0)' } }
+                        bounceSlight: { '0%, 100%': { transform: 'translateY(-5%)' }, '50%': { transform: 'translateY(0)' } },
+                        'gradient-move': {
+                            '0%': { 'background-position': '0% 50%' },
+                            '50%': { 'background-position': '100% 50%' },
+                            '100%': { 'background-position': '0% 50%' },
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-8%)' },
+                        }
                     }
                 }
             }
@@ -51,6 +60,7 @@
 
     <style>
         body { background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
+        .float-anim { animation: float 4s ease-in-out infinite; }
         
         /* Modern Scrollbar */
         ::-webkit-scrollbar { width: 0px; background: transparent; }
@@ -100,15 +110,14 @@
     </div>
 
     <!-- LOGIN VIEW -->
-    <div id="view-login" class="min-h-screen hidden flex flex-col relative overflow-hidden">
+    <div id="view-login" class="min-h-screen hidden flex flex-col relative overflow-hidden bg-gradient-to-br from-indigo-700 via-purple-800 to-blue-700 bg-[length:200%_200%] animate-[gradient-move_15s_ease_infinite]">
         <!-- Decoration -->
-        <div class="absolute top-0 left-0 w-full h-1/2 bg-primary-600 rounded-b-[3rem] z-0"></div>
         <div class="absolute top-[-5rem] right-[-5rem] w-64 h-64 bg-primary-500 rounded-full blur-3xl opacity-50 z-0"></div>
         <div class="absolute bottom-[-5rem] left-[-5rem] w-80 h-80 bg-blue-300 rounded-full blur-3xl opacity-30 z-0"></div>
 
         <div class="relative z-10 flex-1 flex flex-col justify-center px-6 sm:px-12 py-10">
             <div class="text-center mb-8">
-                <div class="w-24 h-24 bg-white rounded-2xl mx-auto flex items-center justify-center mb-6 shadow-xl shadow-primary-900/20 p-4">
+                <div class="w-24 h-24 bg-white rounded-2xl mx-auto flex items-center justify-center mb-6 shadow-xl shadow-primary-900/20 p-4 float-anim">
                     <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiN3lb6zD8UmdVfbhENgNWXK1OjWDvwrZVUaEyMyjcOIxgzqIu5wzGUZusOD9WYXVVupp87PQ4lZcZl6ZyzPtFe8h4-TnjMLz31oDylO9UScGA0bi_miR8MKYufzevuezpGhNrpaOrgixQiPBkS9iZb8JalBVD5ueOhN4TB9x3T9N2yG4rwjEdDUGkoK0k/s554/images%20(2).png" class="w-full h-full object-contain" alt="Logo SMK">
                 </div>
                 <h1 class="text-3xl font-bold text-white mb-1">E-Zin Sekolah</h1>
@@ -123,7 +132,7 @@
                             <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary-600 transition-colors">
                                 <i data-lucide="user" class="w-5 h-5"></i>
                             </div>
-                            <input type="text" id="inp-user" class="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none font-semibold text-slate-800 transition-all" placeholder="Username / NISN / Nama" required>
+                            <input type="text" id="inp-user" class="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none font-semibold text-slate-800 transition-all focus:shadow-lg" placeholder="Username / NISN / Nama" required>
                         </div>
                     </div>
                     <div>
@@ -132,7 +141,7 @@
                             <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary-600 transition-colors">
                                 <i data-lucide="lock" class="w-5 h-5"></i>
                             </div>
-                            <input type="password" id="inp-pass" class="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none font-semibold text-slate-800 transition-all" placeholder="••••••••" required>
+                            <input type="password" id="inp-pass" class="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none font-semibold text-slate-800 transition-all focus:shadow-lg" placeholder="••••••••" required>
                         </div>
                     </div>
                     
@@ -701,17 +710,17 @@
                     
                     container.innerHTML = `
                     <div class="grid grid-cols-2 gap-4 mb-8">
-                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group">
-                            <div class="absolute right-[-10px] top-[-10px] w-16 h-16 bg-blue-50 rounded-full group-hover:scale-110 transition-transform"></div>
-                            <p class="text-xs font-bold text-slate-400 uppercase mb-1 relative z-10">Izin Masuk</p>
-                            <h3 class="text-3xl font-bold text-blue-600 relative z-10">${mList.filter(d=>d.type==='masuk').length}</h3>
-                            <div class="mt-2 text-[10px] bg-blue-50 text-blue-600 inline-block px-2 py-0.5 rounded font-bold">Bulan Ini</div>
+                        <div class="bg-gradient-to-br from-blue-500 to-indigo-600 p-5 rounded-3xl shadow-lg shadow-blue-200 text-white relative overflow-hidden group transition-transform active:scale-95">
+                            <i data-lucide="log-in" class="absolute -right-2 -bottom-2 w-16 h-16 opacity-20 group-hover:scale-110 transition-transform"></i>
+                            <p class="text-xs font-bold uppercase mb-1 relative z-10 opacity-80">Izin Masuk</p>
+                            <h3 class="text-3xl font-bold relative z-10">${mList.filter(d=>d.type==='masuk').length}</h3>
+                            <div class="mt-2 text-[10px] bg-white/20 inline-block px-2 py-0.5 rounded font-bold">Bulan Ini</div>
                         </div>
-                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group">
-                            <div class="absolute right-[-10px] top-[-10px] w-16 h-16 bg-orange-50 rounded-full group-hover:scale-110 transition-transform"></div>
-                            <p class="text-xs font-bold text-slate-400 uppercase mb-1 relative z-10">Izin Keluar</p>
-                            <h3 class="text-3xl font-bold text-orange-600 relative z-10">${mList.filter(d=>d.type==='keluar').length}</h3>
-                            <div class="mt-2 text-[10px] bg-orange-50 text-orange-600 inline-block px-2 py-0.5 rounded font-bold">Bulan Ini</div>
+                        <div class="bg-gradient-to-br from-orange-500 to-red-600 p-5 rounded-3xl shadow-lg shadow-orange-200 text-white relative overflow-hidden group transition-transform active:scale-95">
+                            <i data-lucide="log-out" class="absolute -right-2 -bottom-2 w-16 h-16 opacity-20 group-hover:scale-110 transition-transform"></i>
+                            <p class="text-xs font-bold uppercase mb-1 relative z-10 opacity-80">Izin Keluar</p>
+                            <h3 class="text-3xl font-bold relative z-10">${mList.filter(d=>d.type==='keluar').length}</h3>
+                            <div class="mt-2 text-[10px] bg-white/20 inline-block px-2 py-0.5 rounded font-bold">Bulan Ini</div>
                         </div>
                     </div>
 
@@ -751,14 +760,14 @@
                          <button onclick="Siswa.tab('history')" class="text-sm font-bold text-primary-600">Lihat Semua</button>
                     </div>
                     <div class="space-y-3 pb-6">
-                        ${list.length ? list.slice(0,3).map(p => Siswa.card(p)).join('') : '<div class="text-center py-10 bg-white rounded-2xl border border-slate-100 border-dashed"><p class="text-slate-400 text-sm">Belum ada riwayat izin.</p></div>'}
+                        ${list.length ? list.slice(0,3).map((p, i) => Siswa.card(p, i)).join('') : '<div class="text-center py-10 bg-white rounded-2xl border border-slate-100 border-dashed"><p class="text-slate-400 text-sm">Belum ada riwayat izin.</p></div>'}
                     </div>
                     `;
                 } else if(t === 'history') {
                     container.innerHTML = `
                     <h3 class="font-bold text-slate-800 text-2xl mb-6">Riwayat Perizinan</h3>
                     <div class="space-y-4 pb-20">
-                        ${list.length ? list.map(p => Siswa.card(p)).join('') : '<div class="text-center py-20"><div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400"><i data-lucide="history" class="w-8 h-8"></i></div><p class="text-slate-500">Belum ada data.</p></div>'}
+                        ${list.length ? list.map((p, i) => Siswa.card(p, i)).join('') : '<div class="text-center py-20"><div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400"><i data-lucide="history" class="w-8 h-8"></i></div><p class="text-slate-500">Belum ada data.</p></div>'}
                     </div>`;
                 } else if(t === 'profile') {
                     container.innerHTML = `
@@ -858,13 +867,13 @@
                     });
                 }
             },
-            card: (p) => {
+            card: (p, i = 0) => {
                 const isM = p.type === 'masuk';
                 const color = Utils.statusColor(p.status);
                 const showQR = (p.status === 'approved' || p.status === 'out');
 
                 return `
-                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-3 animate-fade-in">
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-3 animate-fade-in" style="animation-delay: ${i * 100}ms">
                     <div class="flex items-start justify-between">
                         <div class="flex gap-3">
                             <div class="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center ${isM?'bg-blue-50 text-blue-600':'bg-orange-50 text-orange-600'}">
